@@ -1,6 +1,6 @@
 # Can One Model Fit All? Evaluating Foundation Models for Time Series Forecasting Across Clinical Medicine
 
-This repository contains the code, data processing scripts, and evaluation pipeline for our research on foundation models in clinical time series forecasting. We compare large pre-trained transformer-based models to traditional task-specific approaches across six forecasting tasks in multiple clinical settings.
+This repository contains the code, data processing scripts, and evaluation pipeline for our research on foundation models in clinical time series forecasting. We compare pre-trained transformer-based foundation models to traditional task-specific approaches across six forecasting tasks in multiple clinical settings.
 
 ## Abstract
 
@@ -29,22 +29,23 @@ clinical-foundation-forecasting/
 
 We define six clinical forecasting tasks using time series data from hospital EHR systems:
 
-1. Body temperature forecasting
-2. Mean arterial pressure forecasting
-3. Hear rate forecasting
-4. Hemoglobin forecasting
-5. Creatinine forecasting
-6. CT-Scans forecasting
+1. Body temperature
+2. Mean arterial pressure
+3. Heart rate
+4. Hemoglobin
+5. Creatinine
+6. CT-Scans
 
-Each task is defined by a prediction target, time horizon, and relevant input variables. These are specified in the `use_cases/` directory.
+Each task is defined by a prediction target, time horizon, and relevant input variables.
 
 ## Models Compared
 
 We compare the following model families:
 
-- Foundation Models: Chronos, TimesFM (Transformer-based, pre-trained), Time-LLM
-- Tree-based Models: Gradient Boosting Machines (XGBoost)
-- Ensembles: AutoML pipelines with deep learning models
+- Foundation Models: Chronos, TimesFM, Time-LLM
+- Tree-based Model: Gradient Boosting Machines (LightGBM)
+- Deep Learning Model: N-BEATS
+- Ensemble: AutoML with deep learning models
 - Statistical Baselines: ARIMA, Naive
 
 Both zero-shot and fine-tuned scenarios are evaluated. Fine-tuning is performed on each task separately.
@@ -53,11 +54,12 @@ Both zero-shot and fine-tuned scenarios are evaluated. Fine-tuning is performed 
 
 This study uses data from the following sources:
 
-- University Hospital Essen (structured EHR)
-- Two regional hospitals in the same network
+- University Hospital Essen (structured EHR) as training data
+- Prospective data from the University Hospital Essen as temporal validation cohort
+- Two smaller hospitals in the same regional area
 - MIMIC-IV database (public ICU data from Beth Israel Deaconess Medical Center)
 
-All data are de-identified and preprocessed to uniform time-indexed tabular formats. See `data/README.md` for preprocessing details and access instructions.
+All data are de-identified and preprocessed to uniform time-indexed tabular formats.
 
 ## Setup Instructions
 
@@ -76,27 +78,12 @@ All data are de-identified and preprocessed to uniform time-indexed tabular form
    pip install -r requirements.txt
    ```
 
-3. Prepare datasets:
-
-   - Follow `data/README.md` for download, extraction, and preprocessing.
-   - Configure access to MIMIC-IV via PhysioNet if needed.
-
-4. Train or evaluate a model:
+3. Train or evaluate a model:
 
    ```
-   python training/train.py --config configs/chronos_labforecast.yaml
-   python evaluation/evaluate.py --model chronos --task labs
+   python training/train.py
+   python evaluation/evaluate.py
    ```
-
-## Results Summary
-
-| Model Type         | Times Ranked Top Performer | Zero-Shot Performance | Transportability | Fine-Tuning Gain |
-|--------------------|----------------------------|------------------------|------------------|------------------|
-| AutoML Ensembles   | 21                         | No                     | Moderate         | Yes              |
-| Chronos            | 19                         | Yes                    | High             | Yes              |
-| TimesFM            | 18                         | Yes                    | High             | Yes              |
-| Neural Networks    | 13                         | No                     | Low              | Yes              |
-| Statistical Models | 7                          | No                     | Variable         | N/A              |
 
 ## Citation
 
@@ -104,9 +91,8 @@ If you use this work in your own research, please cite:
 
 ```
 @article{yourname2025foundationmodels,
-  title={Foundation Models for Clinical Time Series Forecasting: Evaluating Zero-shot and Fine-tuned Performance Across Sites and Tasks},
-  author={Your Name and Others},
-  journal={arXiv preprint arXiv:XXXX.XXXXX},
+  title={Can One Model Fit All? Evaluating Foundation Models for Time Series Forecasting Across Clinical Medicine.},
+  author={Pucher, G., Dada, A., Agbodoyetin, A., Nensa, F., Schuler, M., Reinhardt, HC., Kleesiek, J., Sauer, CM.},
   year={2025}
 }
 ```
