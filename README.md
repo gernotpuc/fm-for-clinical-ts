@@ -76,7 +76,7 @@ All data are preprocessed to uniform time-indexed tabular formats.
 3. Train or evaluate a model:
 
    ```
-   python train/*.py
+   python train/model_train.py
    python eval/evaluate_models.py
    ```
 
