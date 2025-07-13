@@ -14,15 +14,10 @@ Transformer-based foundation models were compared in zero-shot and fine-tuned se
 
 ```
 clinical-foundation-forecasting/
-├── data/                   # Scripts for loading and preprocessing clinical datasets
-├── models/                 # Implementations and wrappers for all model architectures
-├── training/               # Training and fine-tuning pipelines
-├── evaluation/             # Evaluation metrics, plots, and comparison logic
-├── use_cases/              # Definitions and configuration files for the six forecasting tasks
-├── notebooks/              # Jupyter notebooks for visualization and exploration
-├── results/                # Evaluation outputs and result summaries
-├── requirements.txt        # Python dependencies
-└── README.md               # Project overview
+├── train/               # Training and fine-tuning pipelines
+├── eval/                # Evaluation metrics, plots, and comparison logic
+├── requirements.txt     # Python dependencies
+└── README.md            # Project overview
 ```
 
 ## Use Cases
@@ -59,15 +54,15 @@ This study uses data from the following sources:
 - Two smaller hospitals in the same regional area
 - MIMIC-IV database (public ICU data from Beth Israel Deaconess Medical Center)
 
-All data are de-identified and preprocessed to uniform time-indexed tabular formats.
+All data are preprocessed to uniform time-indexed tabular formats.
 
 ## Setup Instructions
 
 1. Clone the repository:
 
    ```
-   git clone https://github.com/yourusername/clinical-foundation-forecasting.git
-   cd clinical-foundation-forecasting
+   git clone https://github.com/yourusername/fm-for-clinical-ts.git
+   cd fm-for-clinical-ts
    ```
 
 2. Create a virtual environment and install dependencies:
@@ -81,8 +76,8 @@ All data are de-identified and preprocessed to uniform time-indexed tabular form
 3. Train or evaluate a model:
 
    ```
-   python training/train.py
-   python evaluation/evaluate.py
+   python train/*.py
+   python eval/evaluate_models.py
    ```
 
 ## Citation
