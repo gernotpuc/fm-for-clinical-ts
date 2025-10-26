@@ -1,4 +1,4 @@
--- 1️⃣ Cohort definition (same as before)
+-- Cohort definition (same as before)
 WITH fever AS (
   SELECT DISTINCT hadm_id, subject_id
   FROM `physionet-data.mimiciv_3_1_icu.chartevents`
@@ -12,121 +12,25 @@ antibiotics AS (
 cancer AS (
   SELECT DISTINCT hadm_id, subject_id
   FROM `physionet-data.mimiciv_3_1_hosp.diagnoses_icd`
-  #WHERE REGEXP_CONTAINS(icd_code, r'^(C|D0|D3|D4|1[4-9][0-9])')
-  WHERE (
-        icd_code LIKE '140%'  -- ICD-9 malignant neoplasms
-     OR icd_code LIKE '141%'
-     OR icd_code LIKE '142%'
-     OR icd_code LIKE '143%'
-     OR icd_code LIKE '144%'
-     OR icd_code LIKE '145%'
-     OR icd_code LIKE '146%'
-     OR icd_code LIKE '147%'
-     OR icd_code LIKE '148%'
-     OR icd_code LIKE '149%'
-     OR icd_code LIKE '150%'
-     OR icd_code LIKE '151%'
-     OR icd_code LIKE '152%'
-     OR icd_code LIKE '153%'
-     OR icd_code LIKE '154%'
-     OR icd_code LIKE '155%'
-     OR icd_code LIKE '156%'
-     OR icd_code LIKE '157%'
-     OR icd_code LIKE '158%'
-     OR icd_code LIKE '159%'
-     OR icd_code LIKE '160%'
-     OR icd_code LIKE '161%'
-     OR icd_code LIKE '162%'
-     OR icd_code LIKE '163%'
-     OR icd_code LIKE '164%'
-     OR icd_code LIKE '165%'
-     OR icd_code LIKE '166%'
-     OR icd_code LIKE '167%'
-     OR icd_code LIKE '168%'
-     OR icd_code LIKE '169%'
-     OR icd_code LIKE '170%'
-     OR icd_code LIKE '171%'
-     OR icd_code LIKE '172%'
-     OR icd_code LIKE '173%'
-     OR icd_code LIKE '174%'
-     OR icd_code LIKE '175%'
-     OR icd_code LIKE '176%'
-     OR icd_code LIKE '177%'
-     OR icd_code LIKE '178%'
-     OR icd_code LIKE '179%'
-     OR icd_code LIKE '180%'
-     OR icd_code LIKE '181%'
-     OR icd_code LIKE '182%'
-     OR icd_code LIKE '183%'
-     OR icd_code LIKE '184%'
-     OR icd_code LIKE '185%'
-     OR icd_code LIKE '186%'
-     OR icd_code LIKE '187%'
-     OR icd_code LIKE '188%'
-     OR icd_code LIKE '189%'
-     OR icd_code LIKE '190%'
-     OR icd_code LIKE '191%'
-     OR icd_code LIKE '192%'
-     OR icd_code LIKE '193%'
-     OR icd_code LIKE '194%'
-     OR icd_code LIKE '195%'
-     OR icd_code LIKE '196%'
-     OR icd_code LIKE '197%'
-     OR icd_code LIKE '198%'
-     OR icd_code LIKE '199%'
-     OR icd_code LIKE '200%'  -- Lymphoma
-     OR icd_code LIKE '201%'
-     OR icd_code LIKE '202%'
-     OR icd_code LIKE '203%'
-     OR icd_code LIKE '204%'
-     OR icd_code LIKE '205%'
-     OR icd_code LIKE '206%'
-     OR icd_code LIKE '207%'
-     OR icd_code LIKE '208%'
-     OR icd_code LIKE '209%'
-     OR icd_code LIKE '210%'  -- Benign/malignant neoplasms
-     OR icd_code LIKE '211%'
-     OR icd_code LIKE '212%'
-     OR icd_code LIKE '213%'
-     OR icd_code LIKE '214%'
-     OR icd_code LIKE '215%'
-     OR icd_code LIKE '216%'
-     OR icd_code LIKE '217%'
-     OR icd_code LIKE '218%'
-     OR icd_code LIKE '219%'
-     OR icd_code LIKE '220%'
-     OR icd_code LIKE '221%'
-     OR icd_code LIKE '222%'
-     OR icd_code LIKE '223%'
-     OR icd_code LIKE '224%'
-     OR icd_code LIKE '225%'
-     OR icd_code LIKE '226%'
-     OR icd_code LIKE '227%'
-     OR icd_code LIKE '228%'
-     OR icd_code LIKE '229%'
-     OR icd_code LIKE '230%'
-     OR icd_code LIKE '231%'
-     OR icd_code LIKE '232%'
-     OR icd_code LIKE '233%'
-     OR icd_code LIKE '234%'
-     OR icd_code LIKE '235%'
-     OR icd_code LIKE '236%'
-     OR icd_code LIKE '237%'
-     OR icd_code LIKE '238%'
-     OR icd_code LIKE '239%'
-     OR icd_code LIKE 'C%'    -- ICD-10 malignant neoplasms
-     OR icd_code LIKE 'D0%'   -- some benign / uncertain neoplasms
-     OR icd_code LIKE 'D3%'
-     OR icd_code LIKE 'D4%'
+  WHERE REGEXP_CONTAINS(
+    icd_code,
+    r'(?i)^(' ||
+      -- ICD-9 malignant (140–199)
+      '14[0-9]|15[0-9]|16[0-9]|17[0-9]|18[0-9]|19[0-9]|' ||
+      -- ICD-9 hematologic (200–209)
+      '20[0-9]|' ||
+      -- ICD-9 benign / uncertain (210–239)
+      '21[0-9]|22[0-9]|23[0-9]|24[0-9]|25[0-9]|26[0-9]|27[0-9]|28[0-9]|29[0-9]|' ||
+      -- ICD-10 malignant & uncertain (C00–C99, D0x, D3x, D4x)
+      'C[0-9]{2}|D0[0-9]|D3[0-9]|D4[0-9]' ||
+    ')'
   )
 ),
 adult_cohort AS (
   SELECT DISTINCT f.hadm_id, f.subject_id
   FROM fever f
   JOIN antibiotics a USING (hadm_id, subject_id)
-  #JOIN cancer c USING (hadm_id, subject_id)
   JOIN cancer c USING (subject_id)
-
   JOIN `physionet-data.mimiciv_3_1_hosp.admissions` adm
     ON f.hadm_id = adm.hadm_id
   JOIN `physionet-data.mimiciv_3_1_hosp.patients` p
@@ -134,12 +38,14 @@ adult_cohort AS (
   WHERE (EXTRACT(YEAR FROM adm.admittime) - (p.anchor_year - p.anchor_age)) >= 18
 ),
 
--- 2️⃣ Get laboratory measurements for those admissions
+-- Get laboratory measurements for those admissions
+--  Exclude values with data entry delay > 2 hours
 labs AS (
   SELECT
     le.subject_id,
     le.hadm_id,
     le.charttime,
+    le.storetime,
     CASE
       WHEN le.itemid = 50912 THEN 'Creatinine (mg/dL)'
       WHEN le.itemid = 50885 THEN 'Bilirubin (mg/dL)'
@@ -147,15 +53,20 @@ labs AS (
       WHEN le.itemid = 51300 THEN 'Leukocytes (10^9/L)'
       WHEN le.itemid = 51222 THEN 'Hemoglobin (g/dL)'
     END AS variable,
-    le.valuenum AS value
+    le.valuenum AS value,
+    TIMESTAMP_DIFF(le.storetime, le.charttime, MINUTE) / 60.0 AS entry_delay_hours
   FROM `physionet-data.mimiciv_3_1_hosp.labevents` le
   JOIN adult_cohort ac
     ON le.hadm_id = ac.hadm_id
   WHERE le.itemid IN (50912, 50885, 50889, 51300, 51222)
     AND le.valuenum IS NOT NULL
+    AND le.charttime IS NOT NULL
+    AND le.storetime IS NOT NULL
+    --Exclude delays > 2 hours
+    AND TIMESTAMP_DIFF(le.storetime, le.charttime, HOUR) <= 2
 )
 
--- 3️⃣ Output all labs
+-- Output all labs
 SELECT *
 FROM labs
 ORDER BY hadm_id, charttime;
